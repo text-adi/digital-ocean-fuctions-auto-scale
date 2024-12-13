@@ -36,5 +36,10 @@ jobs:
         with:
           no_auth: true
 
+      - name: Init DigitalOcean API client
+        run: |
+          doctl auth init
+      
+
       - name: Deploy to Digital Ocean
         run: doctl serverless deploy .
