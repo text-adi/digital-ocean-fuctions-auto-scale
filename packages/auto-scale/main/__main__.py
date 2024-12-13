@@ -108,8 +108,8 @@ async def run_async(args):
     current_limit = float(result[0])
     current_connection = float(result[1])
 
-    if current_connection / current_limit > alert_percent:
-        print("Alert!!! Need up to", max_size_unit)
+    if current_connection / current_limit >= alert_percent / 100:
+        print("Alert!!! Size up to", max_size_unit)
         auto_scale.edit_size_unit(max_size_unit)
     else:
         print("Relax:). Size down to", min_size_unit)
