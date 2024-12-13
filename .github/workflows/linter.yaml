@@ -34,7 +34,12 @@ jobs:
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
-          no_auth: true
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Settings serverless
+        run: |
+          doctl serverless install
+          doctl serverless connect
 
       - name: Deploy to Digital Ocean
         run: doctl serverless deploy .
