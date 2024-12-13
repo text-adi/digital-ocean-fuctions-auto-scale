@@ -1,3 +1,6 @@
+environment:
+  API_KEY: ${API_KEY}
+  K8S_CONFIG_BASE64: ${K8S_CONFIG_BASE64}
 packages:
   - name: auto-scale
     shared: false
@@ -8,6 +11,8 @@ packages:
         runtime: python:3.11
         web: false
         webSecure: false
+        parameters: { }
+        environment: { }
         annotations: { }
         limits:
           logs: 16
