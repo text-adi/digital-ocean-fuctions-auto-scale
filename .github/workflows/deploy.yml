@@ -1,0 +1,35 @@
+name: Deployment
+
+on:
+  push:
+    branches: [ prod ]
+
+  workflow_dispatch:
+
+permissions:
+  contents: read # This is required for actions/checkout
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  build_and_push:
+    name: Build and push
+    environment:
+      name: ${{ github.ref_name }}
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Create env file
+        run: |
+          echo "API_KEY: ${{ secrets.API_KEY }}"
+          echo "K8S_CONFIG_BASE64: ${{ secrets.K8S_CONFIG_BASE64 }}"
+
+      - name: Deploy to Digital Ocean
+        run: doctl serverless deploy . --remote-build
