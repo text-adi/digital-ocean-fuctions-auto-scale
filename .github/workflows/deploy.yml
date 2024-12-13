@@ -31,9 +31,5 @@ jobs:
           echo "API_KEY: ${{ secrets.API_KEY }}"
           echo "K8S_CONFIG_BASE64: ${{ secrets.K8S_CONFIG_BASE64 }}"
 
-      - name: Init DigitalOcean API client
-        run: |
-          doctl auth init
-
       - name: Deploy to Digital Ocean
         run: doctl serverless deploy . --remote-build
