@@ -31,6 +31,9 @@ jobs:
           echo "API_KEY: ${{ secrets.API_KEY }}" >> .env
           echo "K8S_CONFIG_BASE64: ${{ secrets.K8S_CONFIG_BASE64 }}" >> .env
 
+      - name: Check file env
+        run: cat .env
+
       - name: Settings serverless
         run: |
           doctl serverless install
