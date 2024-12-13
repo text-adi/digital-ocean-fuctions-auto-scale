@@ -36,5 +36,9 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
+      - name: Settings serverless
+        run: |
+          doctl serverless install
+
       - name: Deploy to Digital Ocean
         run: doctl serverless deploy .
