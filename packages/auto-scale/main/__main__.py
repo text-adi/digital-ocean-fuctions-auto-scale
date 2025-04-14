@@ -30,16 +30,8 @@ class AutoScale:
             raise ValueError("Передайте urn для load balancer будь ласка, хоча б")
         self.lb_urn = lb_urn
 
-    def edit_size_unit(self, size: int):
-        """Змінювання кількості unit для load balancing"""
+    def update_service(self, service, param: str):
         v1 = client.CoreV1Api()
-        service = v1.read_namespaced_service(name=self.service_name, namespace=self.namespace)
-        param = 'service.beta.kubernetes.io/do-loadbalancer-size-unit'
-        if service.metadata.annotations[param] == str(size):
-            print("Поточне значення дорівнює бажаному. Нічого не робимо")
-            return
-
-        service.metadata.annotations[param] = str(size)
         try:
             updated_service = v1.patch_namespaced_service(
                 name=self.service_name, namespace=self.namespace, body=service
@@ -48,6 +40,22 @@ class AutoScale:
             print("Поточне значення:", service.metadata.annotations[param])
         except client.exceptions.ApiException as e:
             print("Не вдалося змінити значення. Причина:", e)
+
+    def edit_size_unit(self, size: int):
+        """Змінювання кількості unit для load balancing"""
+        v1 = client.CoreV1Api()
+        service = v1.read_namespaced_service(name=self.service_name, namespace=self.namespace)
+        param = 'service.beta.kubernetes.io/do-loadbalancer-size-unit'
+        if not param in service.metadata.annotations:
+            service.metadata.annotations[param] = str(size)
+            self.update_service(service, param)
+
+        if service.metadata.annotations[param] == str(size):
+            print("Поточне значення дорівнює бажаному. Нічого не робимо")
+            return
+
+        service.metadata.annotations[param] = str(size)
+        self.update_service(service, param)
 
     async def _get_result(self, endpoint: str, ts):
         url = f"https://api.digitalocean.com/v2/monitoring/metrics/load_balancer/{endpoint}?lb_id={self.lb_urn}&start={ts}&end={ts}"

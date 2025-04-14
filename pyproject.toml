@@ -1,0 +1,11 @@
+[project]
+name = "digital-ocean-fuctions"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "aiohttp==3.11.10",
+    "kubernetes==31.0.0",
+    "pyyaml==6.0.2",
+]
